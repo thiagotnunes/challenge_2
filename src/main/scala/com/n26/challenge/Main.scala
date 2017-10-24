@@ -1,20 +1,21 @@
 package com.n26.challenge
 
-import com.twitter.finagle.http.{Request, Response, Status}
-import com.twitter.finagle.{Service, http}
-import com.twitter.util.Future
+import java.time.Clock
+
+import com.n26.challenge.handlers.{StatisticsHandler, TransactionsHandler}
+import com.n26.challenge.parsers.TransactionParser
+import com.n26.challenge.repositories.TransactionsRepository
 
 object Main {
   def main(args: Array[String]): Unit = {
-    val dummyHandler = new Service[http.Request, http.Response] {
-      override def apply(request: Request): Future[Response] = {
-        Future.value(
-          http.Response(request.version, Status.Ok)
-        )
-      }
-    }
+    val clock = Clock.systemUTC()
+    val repository = new TransactionsRepository
+    val transactionParser = new TransactionParser(clock)
+    val transactionsHandler = new TransactionsHandler(transactionParser, repository)
+    val statisticsCalculator = new StatisticsCalculator(repository)
+    val statisticsHandler = new StatisticsHandler(statisticsCalculator)
 
-    val httpServer = new HttpServer(8080, dummyHandler, dummyHandler)
+    val httpServer = new HttpServer(8080, transactionsHandler, statisticsHandler)
 
     httpServer.start()
     httpServer.join()
