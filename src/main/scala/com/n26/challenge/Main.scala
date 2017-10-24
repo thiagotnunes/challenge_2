@@ -14,7 +14,7 @@ object Main {
       }
     }
 
-    val httpServer = new HttpServer(dummyHandler, dummyHandler)
+    val httpServer = new HttpServer(8080, dummyHandler, dummyHandler)
 
     httpServer.start()
     httpServer.join()

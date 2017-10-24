@@ -7,14 +7,20 @@ import org.specs2.mutable.{BeforeAfter, Specification}
 
 class TransactionsHandlerSpec extends Specification {
 
+  sequential
+
   trait Context extends BeforeAfter {
     private val transactionsHandler = new TransactionsHandler
-    private val server = new HttpServer(transactionsHandler, NoOpHandler)
-    val http = new HttpClient("localhost", 8080)
+    private val port = 8080
+    private val server = new HttpServer(port, transactionsHandler, NoOpHandler)
+    val http = new HttpClient("localhost", port)
 
     override def before: Any = {
-      // FIXME: Possible timing issue here
       server.start()
+      while(!http.isServiceAvailable()) {
+        println("Http service unavailable, waiting for boot up")
+        Thread.sleep(1000)
+      }
     }
 
     override def after: Any = {

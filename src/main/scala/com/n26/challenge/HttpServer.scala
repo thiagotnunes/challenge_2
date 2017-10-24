@@ -10,7 +10,8 @@ import com.twitter.finagle.http.service.RoutingService
 import com.twitter.finagle.{Http, Service, http}
 import com.twitter.util.Await
 
-class HttpServer(transactionsHandler: Service[http.Request, http.Response],
+class HttpServer(port: Int,
+                 transactionsHandler: Service[http.Request, http.Response],
                  statisticsHandler: Service[http.Request, http.Response]) {
 
   private var server: Server = _
@@ -23,7 +24,7 @@ class HttpServer(transactionsHandler: Service[http.Request, http.Response],
     server = ServerBuilder()
       .stack(Http.server)
       .name("challenge")
-      .bindTo(new InetSocketAddress(8080))
+      .bindTo(new InetSocketAddress(port))
       .requestTimeout(30.seconds)
       .build(router)
   }
