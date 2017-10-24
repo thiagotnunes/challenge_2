@@ -32,7 +32,7 @@ class TransactionsHandlerSpec extends Specification {
     }
   }
 
-  "returns ok response" in new Context {
+  "returns created when transaction was added to repository" in new Context {
     private val response = http.postJson("/transactions")(
       """
         |{
@@ -46,5 +46,11 @@ class TransactionsHandlerSpec extends Specification {
     response.status ==== Status.Created
     transaction.amount must beCloseTo(12.3, 1.significantFigure)
     transaction.timestamp ==== 1478192204000L
+  }
+
+  "returns bad request when json is malformed" in new Context {
+    private val response = http.postJson("/transactions")("{ i-am-malformed: }")
+
+    response.status ==== Status.BadRequest
   }
 }
