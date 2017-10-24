@@ -11,10 +11,10 @@ object Main {
   def main(args: Array[String]): Unit = {
     val clock = Clock.systemUTC()
     val repository = new TransactionsRepository
-    val expirationStrategy = new ExpirationStrategy(clock, Duration.fromSeconds(60))
-    val transactionParser = new TransactionParser(expirationStrategy)
+    val expirationChecker = new ExpirationChecker(clock, Duration.fromSeconds(60))
+    val transactionParser = new TransactionParser(expirationChecker)
     val transactionsHandler = new TransactionsHandler(transactionParser, repository)
-    val statisticsCalculator = new StatisticsCalculator(expirationStrategy, repository)
+    val statisticsCalculator = new StatisticsCalculator(expirationChecker, repository)
     val statisticsHandler = new StatisticsHandler(statisticsCalculator)
 
     val httpServer = new HttpServer(8080, transactionsHandler, statisticsHandler)

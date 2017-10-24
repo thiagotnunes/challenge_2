@@ -4,7 +4,7 @@ import java.time.{Clock, Instant}
 
 import com.twitter.util.Duration
 
-class ExpirationStrategy(clock: Clock, expirationTime: Duration) {
+class ExpirationChecker(clock: Clock, expirationTime: Duration) {
 
   def isNotExpired(timestamp: Long): Boolean = {
     val now = Instant.now(clock)

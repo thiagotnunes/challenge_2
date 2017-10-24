@@ -5,13 +5,13 @@ import com.n26.challenge.repositories.TransactionsRepository
 
 import scala.collection.JavaConverters._
 
-class StatisticsCalculator(expirationStrategy: ExpirationStrategy,
+class StatisticsCalculator(expirationChecker: ExpirationChecker,
                            repository: TransactionsRepository) {
   def calculate(): Statistics = {
     repository
       .findAll()
       .asScala
-      .filter(transaction => expirationStrategy.isNotExpired(transaction.timestamp))
+      .filter(transaction => expirationChecker.isNotExpired(transaction.timestamp))
       .foldLeft(Statistics.Empty)((acc, transaction) => {
         val sum = acc.sum + transaction.amount
         val count = acc.count + 1

@@ -19,8 +19,8 @@ class StatisticsHandlerSpec extends Specification {
     val now: Instant = Instant.now()
     val http: HttpClient = new HttpClient("localhost", port)
     val repository: TransactionsRepository = new TransactionsRepository
-    private val expirationStrategy = new ExpirationStrategy(Clock.fixed(now, ZoneOffset.UTC), Duration.fromSeconds(60))
-    private val calculator = new StatisticsCalculator(expirationStrategy, repository)
+    private val expirationChecker = new ExpirationChecker(Clock.fixed(now, ZoneOffset.UTC), Duration.fromSeconds(60))
+    private val calculator = new StatisticsCalculator(expirationChecker, repository)
     private val statisticsHandler = new StatisticsHandler(calculator)
     private val server = new HttpServer(port, NoOpHandler, statisticsHandler)
 
