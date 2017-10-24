@@ -3,18 +3,19 @@ package com.n26.challenge.parsers
 import java.time.temporal.ChronoUnit.SECONDS
 import java.time.{Clock, Instant}
 
+import com.n26.challenge.ExpirationStrategy
 import com.n26.challenge.handlers.ApiError
 import com.n26.challenge.models.Transaction
 import play.api.libs.json.{JsValue, Json}
 
 import scala.util.Try
 
-class TransactionParser(clock: Clock) {
+class TransactionParser(expirationStrategy: ExpirationStrategy) {
   def parse(content: String): Either[ApiError, Transaction] = {
     for {
       json <- toJson(content)
       transaction <- asTransaction(json)
-      _ <- atMost60SecondsOld(transaction)
+      _ <- notExpired(transaction)
     } yield {
       transaction
     }
@@ -30,9 +31,9 @@ class TransactionParser(clock: Clock) {
       .fold(_ => Left(ApiError.MalformedJson), Right(_))
   }
 
-  private def atMost60SecondsOld(transaction: Transaction): Either[ApiError, Unit] = {
+  private def notExpired(transaction: Transaction): Either[ApiError, Unit] = {
     Either.cond(
-      transaction.timestamp >= Instant.now(clock).minus(60, SECONDS).toEpochMilli,
+      expirationStrategy.isNotExpired(transaction.timestamp),
       Unit,
       ApiError.OldTransaction
     )

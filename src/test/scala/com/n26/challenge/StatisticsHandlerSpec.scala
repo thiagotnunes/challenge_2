@@ -2,24 +2,25 @@ package com.n26.challenge
 
 import java.time.{Clock, Instant, ZoneOffset}
 
+import com.n26.challenge.JsonMatchers._
 import com.n26.challenge.handlers.StatisticsHandler
+import com.n26.challenge.models.Transaction
 import com.n26.challenge.repositories.TransactionsRepository
 import com.twitter.finagle.http.Status
+import com.twitter.util.Duration
 import org.specs2.mutable.{BeforeAfter, Specification}
-import JsonMatchers._
-import com.n26.challenge.models.Transaction
 
 class StatisticsHandlerSpec extends Specification {
 
   sequential
 
   trait Context extends BeforeAfter {
-    val now: Instant = Instant.now()
     private val port = 8080
-    private val clock = Clock.fixed(now, ZoneOffset.UTC)
+    val now: Instant = Instant.now()
     val http: HttpClient = new HttpClient("localhost", port)
     val repository: TransactionsRepository = new TransactionsRepository
-    private val calculator = new StatisticsCalculator(clock, repository)
+    private val expirationStrategy = new ExpirationStrategy(Clock.fixed(now, ZoneOffset.UTC), Duration.fromSeconds(60))
+    private val calculator = new StatisticsCalculator(expirationStrategy, repository)
     private val statisticsHandler = new StatisticsHandler(calculator)
     private val server = new HttpServer(port, NoOpHandler, statisticsHandler)
 
