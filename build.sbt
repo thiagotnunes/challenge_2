@@ -1,5 +1,6 @@
 name := "challenge"
 
+scalaVersion := "2.12.4"
 version := "1.0"
 
 libraryDependencies := Seq(
