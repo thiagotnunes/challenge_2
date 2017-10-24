@@ -4,7 +4,7 @@ import java.time.temporal.ChronoUnit.{MILLIS, SECONDS}
 import java.time.{Clock, Instant, ZoneOffset}
 
 import com.n26.challenge.parsers.TransactionParser
-import com.n26.challenge.repositories.TransactionsRepository
+import com.n26.challenge.repositories.StatisticsRepository
 import com.n26.challenge.{ExpirationChecker, HttpClient, HttpServer, NoOpHandler}
 import com.twitter.finagle.http.Status
 import com.twitter.util.Duration
@@ -18,8 +18,8 @@ class TransactionsHandlerSpec extends Specification {
     private val port = 8080
     val now: Instant = Instant.now()
     val http: HttpClient = new HttpClient("localhost", port)
-    val repository: TransactionsRepository = new TransactionsRepository
     private val expirationChecker = new ExpirationChecker(Clock.fixed(now, ZoneOffset.UTC), Duration.fromSeconds(60))
+    val repository: StatisticsRepository = new StatisticsRepository(expirationChecker)
     private val parser = new TransactionParser(expirationChecker)
     private val transactionsHandler = new TransactionsHandler(parser, repository)
     private val server = new HttpServer(port, transactionsHandler, NoOpHandler)
