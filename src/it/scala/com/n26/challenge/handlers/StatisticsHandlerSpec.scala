@@ -1,9 +1,9 @@
-package com.n26.challenge
+package com.n26.challenge.handlers
 
 import java.time.{Clock, Instant, ZoneOffset}
 
 import com.n26.challenge.JsonMatchers._
-import com.n26.challenge.handlers.StatisticsHandler
+import com.n26.challenge._
 import com.n26.challenge.models.Transaction
 import com.n26.challenge.repositories.TransactionsRepository
 import com.twitter.finagle.http.Status

@@ -1,11 +1,11 @@
-package com.n26.challenge
+package com.n26.challenge.handlers
 
 import java.time.temporal.ChronoUnit.{MILLIS, SECONDS}
 import java.time.{Clock, Instant, ZoneOffset}
 
-import com.n26.challenge.handlers.TransactionsHandler
 import com.n26.challenge.parsers.TransactionParser
 import com.n26.challenge.repositories.TransactionsRepository
+import com.n26.challenge.{ExpirationStrategy, HttpClient, HttpServer, NoOpHandler}
 import com.twitter.finagle.http.Status
 import com.twitter.util.Duration
 import org.specs2.mutable.{BeforeAfter, Specification}
