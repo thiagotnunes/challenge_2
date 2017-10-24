@@ -1,5 +1,7 @@
 package com.n26.challenge
 
+import java.time.{Clock, Instant, ZoneOffset}
+
 import com.n26.challenge.handlers.StatisticsHandler
 import com.n26.challenge.repositories.TransactionsRepository
 import com.twitter.finagle.http.Status
@@ -12,10 +14,12 @@ class StatisticsHandlerSpec extends Specification {
   sequential
 
   trait Context extends BeforeAfter {
+    val now: Instant = Instant.now()
     private val port = 8080
+    private val clock = Clock.fixed(now, ZoneOffset.UTC)
     val http: HttpClient = new HttpClient("localhost", port)
     val repository: TransactionsRepository = new TransactionsRepository
-    private val calculator = new StatisticsCalculator(repository)
+    private val calculator = new StatisticsCalculator(clock, repository)
     private val statisticsHandler = new StatisticsHandler(calculator)
     private val server = new HttpServer(port, NoOpHandler, statisticsHandler)
 
@@ -49,12 +53,12 @@ class StatisticsHandlerSpec extends Specification {
     )
   }
 
-  "returns stats from the transactions in the repository" in new Context {
-    repository.insert(Transaction(10, 0L))
-    repository.insert(Transaction(20, 0L))
-    repository.insert(Transaction(30, 0L))
-    repository.insert(Transaction(40, 0L))
-    repository.insert(Transaction(50, 0L))
+  "returns stats from the transactions from at most 60 seconds ago" in new Context {
+    repository.insert(Transaction(10, now.minusSeconds(60).toEpochMilli))
+    repository.insert(Transaction(20, now.minusSeconds(61).toEpochMilli))
+    repository.insert(Transaction(30, now.minusSeconds(10).toEpochMilli))
+    repository.insert(Transaction(40, now.minusSeconds(80).toEpochMilli))
+    repository.insert(Transaction(50, now.minusSeconds(1).toEpochMilli))
 
     private val response = http.getJson("/statistics")
 
@@ -62,11 +66,11 @@ class StatisticsHandlerSpec extends Specification {
     response.getContentString() must beEqualToJson(
       s"""
          |{
-         |  "sum": 150,
+         |  "sum": 90,
          |  "avg": 30,
          |  "max": 50,
          |  "min": 10,
-         |  "count": 5
+         |  "count": 3
          |}
       """.stripMargin
     )

@@ -12,7 +12,7 @@ object Main {
     val repository = new TransactionsRepository
     val transactionParser = new TransactionParser(clock)
     val transactionsHandler = new TransactionsHandler(transactionParser, repository)
-    val statisticsCalculator = new StatisticsCalculator(repository)
+    val statisticsCalculator = new StatisticsCalculator(clock, repository)
     val statisticsHandler = new StatisticsHandler(statisticsCalculator)
 
     val httpServer = new HttpServer(8080, transactionsHandler, statisticsHandler)
