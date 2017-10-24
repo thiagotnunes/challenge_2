@@ -5,7 +5,7 @@ import java.net.{InetSocketAddress, Socket}
 import com.twitter.finagle.Http
 import com.twitter.finagle.http.{RequestBuilder, Response}
 import com.twitter.io.Buf
-import com.twitter.util.{Await, Future}
+import com.twitter.util.Await
 
 import scala.util.Try
 
@@ -16,9 +16,20 @@ class HttpClient(host: String, port: Int) {
     Await.result(
       http(
         RequestBuilder()
-          .url(s"http://$host:$port/$path")
+          .url(s"http://$host:$port$path")
           .addHeader("Content-Type", "application/json")
           .buildPost(Buf.ByteArray(body.getBytes("UTF-8"): _*))
+      )
+    )
+  }
+
+  def getJson(path: String): Response = {
+    Await.result(
+      http(
+        RequestBuilder()
+          .url(s"http://$host:$port$path")
+          .addHeader("Content-Type", "application/json")
+          .buildGet()
       )
     )
   }

@@ -17,7 +17,7 @@ class HttpServer(port: Int,
   private var server: Server = _
   private val router = RoutingService.byMethodAndPathObject {
     case (Method.Post, Root / "transactions") => transactionsHandler
-    case (Method.Get, Root / "statistics") => transactionsHandler
+    case (Method.Get, Root / "statistics") => statisticsHandler
   }
 
   def start(): Unit = {
