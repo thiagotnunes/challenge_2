@@ -77,7 +77,7 @@ If real time statistics consolidation is a big concern, we could reduce the inte
 
 ## Out of Scope
 
-There are a few problems in the solution, which I have not decided to tackle:
+I have decided not to tackle the following problem:
 
 - Statistics Overflow: this might happen if the sum surpasses `double` max value.
 
