@@ -13,5 +13,7 @@ class ExpirationChecker(clock: Clock, ttl: Duration) {
     timestamp < expirationTimestamp
   }
 
-  val isNotExpired: Long => Boolean = !isExpired(_)
+  def isNotExpired(timestamp: Long): Boolean = {
+    !isExpired(timestamp)
+  }
 }

@@ -8,7 +8,8 @@ lazy val root = (project in file("."))
       "com.twitter" %% "finagle-http" % "7.1.0",
       "com.typesafe.play" %% "play-json" % "2.6.6",
       "org.quartz-scheduler" % "quartz" % "2.3.0",
-      "org.specs2" %% "specs2-core" % "4.0.1" % "test,it"
+      "org.specs2" %% "specs2-core" % "4.0.1" % "test,it",
+      "org.specs2" %% "specs2-mock" % "4.0.1" % "test"
     ),
     Defaults.itSettings,
     parallelExecution in IntegrationTest := false

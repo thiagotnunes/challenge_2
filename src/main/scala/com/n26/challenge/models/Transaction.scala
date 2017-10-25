@@ -7,7 +7,7 @@ case class Transaction(amount: Double, timestamp: Long)
 
 object Transaction {
   implicit val reads: Reads[Transaction] = (
-    (JsPath \ "amount").read[Double] and
+    (JsPath \ "amount").read[Double](Reads.verifying[Double](_ > 0)) and
       (JsPath \ "timestamp").read[Long]
     ) (Transaction.apply _)
 }
