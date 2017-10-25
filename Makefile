@@ -1,5 +1,5 @@
 DOCKER_DIR := /challenge
-DOCKER_RUN := docker run -v `pwd`:$(DOCKER_DIR) -w $(DOCKER_DIR) -p 8080:8080 --rm hseeberger/scala-sbt
+DOCKER_RUN := docker run -v `pwd`:$(DOCKER_DIR) -w $(DOCKER_DIR) -p 4567:4567 --rm hseeberger/scala-sbt
 
 clean:
 	rm -fr target

@@ -5,7 +5,7 @@ import java.time.Clock
 import com.twitter.util.Duration
 
 class ProductionConfig extends AppConfig {
-  override def port: Int = 8080
+  override def port: Int = 4567
 
   override def clock: Clock = Clock.systemUTC()
 

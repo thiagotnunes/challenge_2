@@ -6,9 +6,9 @@ import com.n26.challenge.config.AppConfig
 import com.twitter.util.Duration
 
 class TestConfig(override val clock: Clock) extends AppConfig {
-  override def port = 8080
+  override def port: Int = 4567
 
-  override def schedulerIntervalMillis = 10
+  override def schedulerIntervalMillis: Long = 10
 
-  override def transactionTtl = Duration.fromSeconds(60)
+  override def transactionTtl: Duration = Duration.fromSeconds(60)
 }
