@@ -1,10 +1,10 @@
-package com.n26.challenge.recalculator
+package com.n26.challenge.calculator
 
 import com.n26.challenge.repositories.StatisticsRepository
 import org.quartz._
 import org.quartz.impl.StdSchedulerFactory
 
-class StatisticsCalculator(repository: StatisticsRepository) {
+class StatisticsCalculator(intervalMillis: Long, repository: StatisticsRepository) {
 
   private val schedulerFactory = new StdSchedulerFactory
   private val scheduler = schedulerFactory.getScheduler
@@ -19,7 +19,7 @@ class StatisticsCalculator(repository: StatisticsRepository) {
     .withSchedule(
       SimpleScheduleBuilder
         .simpleSchedule()
-        .withIntervalInSeconds(1)
+        .withIntervalInMilliseconds(intervalMillis)
         .repeatForever()
     )
     .build()

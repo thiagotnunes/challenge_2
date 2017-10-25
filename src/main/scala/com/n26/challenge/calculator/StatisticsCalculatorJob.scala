@@ -1,4 +1,4 @@
-package com.n26.challenge.recalculator
+package com.n26.challenge.calculator
 
 import com.n26.challenge.repositories.StatisticsRepository
 import org.quartz.{Job, JobExecutionContext}
