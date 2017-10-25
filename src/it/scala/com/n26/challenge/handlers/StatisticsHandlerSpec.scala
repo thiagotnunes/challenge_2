@@ -53,11 +53,11 @@ class StatisticsHandlerSpec extends Specification {
   }
 
   "returns stats from the transactions from at most 60 seconds ago" in new Context {
-    repository.add(Transaction(10, now.minusSeconds(60).toEpochMilli))
-    repository.add(Transaction(20, now.minusSeconds(61).toEpochMilli))
-    repository.add(Transaction(30, now.minusSeconds(10).toEpochMilli))
-    repository.add(Transaction(40, now.minusSeconds(80).toEpochMilli))
-    repository.add(Transaction(50, now.minusSeconds(1).toEpochMilli))
+    repository.insert(Transaction(10, now.minusSeconds(60).toEpochMilli))
+    repository.insert(Transaction(20, now.minusSeconds(61).toEpochMilli))
+    repository.insert(Transaction(30, now.minusSeconds(10).toEpochMilli))
+    repository.insert(Transaction(40, now.minusSeconds(80).toEpochMilli))
+    repository.insert(Transaction(50, now.minusSeconds(1).toEpochMilli))
 
     // Sleeping in tests is not optimal, but I am gonna go with it
     // to make sure that the scheduler has built the stats cache

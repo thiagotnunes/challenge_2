@@ -15,7 +15,7 @@ class TransactionsHandler(parser: TransactionRequestParser,
     (for {
       body <- Right(request.getContentString())
       transaction <- parser.parse(body)
-      _ <- Right(repository.add(transaction))
+      _ <- Right(repository.insert(transaction))
     } yield {
       transaction
     }).fold(handleError, handleSuccess)

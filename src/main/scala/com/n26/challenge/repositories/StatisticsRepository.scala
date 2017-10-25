@@ -10,7 +10,7 @@ class StatisticsRepository() {
   private var transactions = new mutable.ArrayBuffer[Transaction]()
   private var statistics = Statistics.Empty
 
-  def add(transaction: Transaction): Unit = {
+  def insert(transaction: Transaction): Unit = {
     this.synchronized {
       transactions += transaction
     }

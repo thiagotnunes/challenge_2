@@ -22,9 +22,9 @@ class StatisticsCacheBuilderSpec extends Specification {
   }
 
   "updates statistics by removing transactions older than 60 seconds" in new Context {
-    repository.add(Transaction(10, now.minusSeconds(30).toEpochMilli))
-    repository.add(Transaction(20, now.minusSeconds(60).toEpochMilli))
-    repository.add(Transaction(30, now.minusSeconds(70).toEpochMilli))
+    repository.insert(Transaction(10, now.minusSeconds(30).toEpochMilli))
+    repository.insert(Transaction(20, now.minusSeconds(60).toEpochMilli))
+    repository.insert(Transaction(30, now.minusSeconds(70).toEpochMilli))
 
     app.start()
     app.stop()
