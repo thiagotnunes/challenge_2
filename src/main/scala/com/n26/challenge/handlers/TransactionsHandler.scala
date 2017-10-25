@@ -1,13 +1,13 @@
 package com.n26.challenge.handlers
 
 import com.n26.challenge.models.Transaction
-import com.n26.challenge.parsers.TransactionParser
+import com.n26.challenge.parsers.TransactionRequestParser
 import com.n26.challenge.repositories.StatisticsRepository
 import com.twitter.finagle.Service
 import com.twitter.finagle.http.{Request, Response, Status}
 import com.twitter.util.Future
 
-class TransactionsHandler(parser: TransactionParser,
+class TransactionsHandler(parser: TransactionRequestParser,
                           repository: StatisticsRepository)
   extends Service[Request, Response] {
 
@@ -28,7 +28,7 @@ class TransactionsHandler(parser: TransactionParser,
   private def handleError(error: ApiError): Future[Response] = {
     error match {
       case ApiError.MalformedJson => Future.value(Response(Status.BadRequest))
-      case ApiError.OldTransaction => Future.value(Response(Status.NoContent))
+      case ApiError.ExpiredTransaction => Future.value(Response(Status.NoContent))
     }
   }
 }

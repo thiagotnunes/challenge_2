@@ -4,10 +4,10 @@ import java.time.{Clock, Instant, ZoneOffset}
 
 import com.n26.challenge.JsonMatchers._
 import com.n26.challenge._
+import com.n26.challenge.config.AppConfig
 import com.n26.challenge.models.Transaction
 import com.n26.challenge.repositories.StatisticsRepository
 import com.twitter.finagle.http.Status
-import com.twitter.util.Duration
 import org.specs2.mutable.{BeforeAfter, Specification}
 
 class StatisticsHandlerSpec extends Specification {
@@ -15,16 +15,15 @@ class StatisticsHandlerSpec extends Specification {
   sequential
 
   trait Context extends BeforeAfter {
-    private val port = 8080
     val now: Instant = Instant.now()
-    val http: HttpClient = new HttpClient("localhost", port)
-    private val expirationChecker = new ExpirationChecker(Clock.fixed(now, ZoneOffset.UTC), Duration.fromSeconds(60))
-    val repository: StatisticsRepository = new StatisticsRepository(expirationChecker)
-    private val statisticsHandler = new StatisticsHandler(repository)
-    private val server = new HttpServer(port, NoOpHandler, statisticsHandler)
+    val clock: Clock = Clock.fixed(now, ZoneOffset.UTC)
+    val config: AppConfig = new TestConfig(clock)
+    val repository: StatisticsRepository = new StatisticsRepository()
+    val app: Application = new Application(config, repository)
+    val http: HttpClient = new HttpClient("localhost", config.port)
 
     override def before: Any = {
-      server.start()
+      app.start()
       while (!http.isServiceAvailable()) {
         println("Http service unavailable, waiting for boot up")
         Thread.sleep(1000)
@@ -32,7 +31,7 @@ class StatisticsHandlerSpec extends Specification {
     }
 
     override def after: Any = {
-      server.stop()
+      app.stop()
     }
   }
 

@@ -4,11 +4,11 @@ import java.time.{Clock, Instant}
 
 import com.twitter.util.Duration
 
-class ExpirationChecker(clock: Clock, expirationTime: Duration) {
+class ExpirationChecker(clock: Clock, ttl: Duration) {
 
   def isExpired(timestamp: Long): Boolean = {
     val now = Instant.now(clock)
-    val expirationTimestamp = now.minusNanos(expirationTime.inNanoseconds).toEpochMilli
+    val expirationTimestamp = now.minusNanos(ttl.inNanoseconds).toEpochMilli
 
     timestamp < expirationTimestamp
   }

@@ -6,14 +6,13 @@ import com.n26.challenge.models.{Statistics, Transaction}
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
-class StatisticsRepository(expirationChecker: ExpirationChecker) {
+class StatisticsRepository() {
   private var transactions = new mutable.ArrayBuffer[Transaction]()
   private var statistics = Statistics.Empty
 
   def add(transaction: Transaction): Unit = {
     this.synchronized {
       transactions += transaction
-      recalculate()
     }
   }
 
@@ -31,7 +30,7 @@ class StatisticsRepository(expirationChecker: ExpirationChecker) {
 
   // Time complexity - O(n)
   // Space complexity - O(n)
-  def recalculate(): Unit = {
+  def rebuildStatistics(expirationChecker: ExpirationChecker): Unit = {
     this.synchronized {
       val newTransactions = transactions
         .filter(transaction => expirationChecker.isNotExpired(transaction.timestamp))

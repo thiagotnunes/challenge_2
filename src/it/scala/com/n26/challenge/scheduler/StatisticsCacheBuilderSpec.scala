@@ -1,24 +1,24 @@
-package com.n26.challenge.calculator
+package com.n26.challenge.scheduler
 
 import java.time.{Clock, Instant, ZoneOffset}
 
-import com.n26.challenge.ExpirationChecker
+import com.n26.challenge.config.AppConfig
 import com.n26.challenge.models.{Statistics, Transaction}
 import com.n26.challenge.repositories.StatisticsRepository
-import com.twitter.util.Duration
+import com.n26.challenge.{Application, TestConfig}
 import org.specs2.mutable.Specification
 import org.specs2.specification.Scope
 
-class StatisticsCalculatorSpec extends Specification {
+class StatisticsCacheBuilderSpec extends Specification {
 
   sequential
 
   trait Context extends Scope {
     val now: Instant = Instant.now()
-    val schedulerIntervalInMillis: Long = 10
-    private val expirationChecker = new ExpirationChecker(Clock.fixed(now, ZoneOffset.UTC), Duration.fromSeconds(60))
-    val repository: StatisticsRepository = new StatisticsRepository(expirationChecker)
-    val calculator: StatisticsCalculator = new StatisticsCalculator(schedulerIntervalInMillis, repository)
+    val clock: Clock = Clock.fixed(now, ZoneOffset.UTC)
+    val config: AppConfig = new TestConfig(clock)
+    val repository: StatisticsRepository = new StatisticsRepository()
+    val app: Application = new Application(config, repository)
   }
 
   "updates statistics by removing transactions older than 60 seconds" in new Context {
@@ -26,15 +26,15 @@ class StatisticsCalculatorSpec extends Specification {
     repository.add(Transaction(20, now.minusSeconds(60).toEpochMilli))
     repository.add(Transaction(30, now.minusSeconds(70).toEpochMilli))
 
-    calculator.start()
-    calculator.stop() // Blocks until all jobs finished
+    app.start()
+    app.stop()
 
     repository.getStatistics() ==== Statistics(30, 15, 20, 10, 2)
   }
 
   "does nothing when there are no transactions" in new Context {
-    calculator.start()
-    calculator.stop()
+    app.start()
+    app.stop()
 
     repository.getStatistics() ==== Statistics.Empty
   }

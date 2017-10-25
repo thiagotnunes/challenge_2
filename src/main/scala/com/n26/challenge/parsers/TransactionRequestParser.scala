@@ -1,8 +1,5 @@
 package com.n26.challenge.parsers
 
-import java.time.temporal.ChronoUnit.SECONDS
-import java.time.{Clock, Instant}
-
 import com.n26.challenge.ExpirationChecker
 import com.n26.challenge.handlers.ApiError
 import com.n26.challenge.models.Transaction
@@ -10,7 +7,7 @@ import play.api.libs.json.{JsValue, Json}
 
 import scala.util.Try
 
-class TransactionParser(expirationChecker: ExpirationChecker) {
+class TransactionRequestParser(expirationChecker: ExpirationChecker) {
   def parse(content: String): Either[ApiError, Transaction] = {
     for {
       json <- toJson(content)
@@ -35,7 +32,7 @@ class TransactionParser(expirationChecker: ExpirationChecker) {
     Either.cond(
       expirationChecker.isNotExpired(transaction.timestamp),
       Unit,
-      ApiError.OldTransaction
+      ApiError.ExpiredTransaction
     )
   }
 }
