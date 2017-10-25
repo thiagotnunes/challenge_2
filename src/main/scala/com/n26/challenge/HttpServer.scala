@@ -4,15 +4,15 @@ import java.net.InetSocketAddress
 
 import com.twitter.conversions.time._
 import com.twitter.finagle.builder.{Server, ServerBuilder}
-import com.twitter.finagle.http.Method
 import com.twitter.finagle.http.path.{/, Root}
 import com.twitter.finagle.http.service.RoutingService
-import com.twitter.finagle.{Http, Service, http}
+import com.twitter.finagle.http.{Method, Request, Response}
+import com.twitter.finagle.{Http, Service}
 import com.twitter.util.Await
 
 class HttpServer(port: Int,
-                 transactionsHandler: Service[http.Request, http.Response],
-                 statisticsHandler: Service[http.Request, http.Response]) {
+                 transactionsHandler: Service[Request, Response],
+                 statisticsHandler: Service[Request, Response]) {
 
   private var server: Server = _
   private val router = RoutingService.byMethodAndPathObject {

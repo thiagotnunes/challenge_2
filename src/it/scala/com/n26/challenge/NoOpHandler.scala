@@ -1,11 +1,11 @@
 package com.n26.challenge
 
+import com.twitter.finagle.Service
 import com.twitter.finagle.http.{Request, Response, Status}
-import com.twitter.finagle.{Service, http}
 import com.twitter.util.Future
 
-object NoOpHandler extends Service[http.Request, http.Response] {
+object NoOpHandler extends Service[Request, Response] {
   override def apply(request: Request): Future[Response] = {
-    Future.value(http.Response(Status.InternalServerError))
+    Future.value(Response(Status.InternalServerError))
   }
 }

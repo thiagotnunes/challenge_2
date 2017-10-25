@@ -1,15 +1,15 @@
 package com.n26.challenge.handlers
 
 import com.n26.challenge.models.Transaction
-import com.n26.challenge.repositories.StatisticsRepository
 import com.n26.challenge.parsers.TransactionParser
+import com.n26.challenge.repositories.StatisticsRepository
+import com.twitter.finagle.Service
 import com.twitter.finagle.http.{Request, Response, Status}
-import com.twitter.finagle.{Service, http}
 import com.twitter.util.Future
 
 class TransactionsHandler(parser: TransactionParser,
                           repository: StatisticsRepository)
-  extends Service[http.Request, http.Response] {
+  extends Service[Request, Response] {
 
   override def apply(request: Request): Future[Response] = {
     (for {

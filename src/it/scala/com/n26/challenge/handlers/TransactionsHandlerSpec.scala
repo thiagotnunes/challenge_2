@@ -1,6 +1,5 @@
 package com.n26.challenge.handlers
 
-import java.time.temporal.ChronoUnit.{MILLIS, SECONDS}
 import java.time.{Clock, Instant, ZoneOffset}
 
 import com.n26.challenge.parsers.TransactionParser
@@ -38,7 +37,7 @@ class TransactionsHandlerSpec extends Specification {
   }
 
   "returns created when transaction is at most 60 seconds old" in new Context {
-    private val timestamp = now.minus(60, SECONDS).toEpochMilli
+    private val timestamp = now.minusSeconds(60).toEpochMilli
     private val response = http.postJson("/transactions")(
       s"""
          |{
@@ -59,7 +58,7 @@ class TransactionsHandlerSpec extends Specification {
       s"""
          |{
          |  "amount": 1,
-         |  "timestamp": ${now.minus(60001, MILLIS).toEpochMilli}
+         |  "timestamp": ${now.minusMillis(60001).toEpochMilli}
          |}
       """.stripMargin
     )
