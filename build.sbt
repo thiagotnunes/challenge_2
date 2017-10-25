@@ -4,6 +4,7 @@ lazy val root = (project in file("."))
     name := "challenge",
     scalaVersion := "2.12.4",
     version := "1.0",
+    mainClass := Some("com.n26.challenge.Main"),
     libraryDependencies := Seq(
       "com.twitter" %% "finagle-http" % "7.1.0",
       "com.typesafe.play" %% "play-json" % "2.6.6",
