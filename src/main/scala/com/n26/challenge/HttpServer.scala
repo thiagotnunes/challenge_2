@@ -16,7 +16,8 @@ class HttpServer(port: Int,
                  transactionsHandler: Service[Request, Response],
                  statisticsHandler: Service[Request, Response]) {
 
-  private val filter = new LoggingFilter[Request](Logger.get(classOf[HttpServer]), new CommonLogFormatter)
+  private val logger = Logger.get(classOf[HttpServer])
+  private val filter = new LoggingFilter[Request](logger, new CommonLogFormatter)
   private var server: Server = _
   private val router = RoutingService.byMethodAndPathObject {
     case (Method.Post, Root / "transactions") => transactionsHandler
@@ -33,6 +34,7 @@ class HttpServer(port: Int,
   }
 
   def join(): Unit = {
+    logger.info(s"Http server started listening at $port")
     Await.ready(server)
   }
 
