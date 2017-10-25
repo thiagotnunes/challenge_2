@@ -4,6 +4,7 @@ import java.time.Clock
 
 import com.n26.challenge.handlers.{StatisticsHandler, TransactionsHandler}
 import com.n26.challenge.parsers.TransactionParser
+import com.n26.challenge.recalculator.StatisticsCalculator
 import com.n26.challenge.repositories.StatisticsRepository
 import com.twitter.util.Duration
 
@@ -13,11 +14,14 @@ object Main {
     val expirationChecker = new ExpirationChecker(clock, Duration.fromSeconds(60))
     val repository = new StatisticsRepository(expirationChecker)
     val transactionParser = new TransactionParser(expirationChecker)
+
+    val statisticsCalculator = new StatisticsCalculator(repository)
     val transactionsHandler = new TransactionsHandler(transactionParser, repository)
     val statisticsHandler = new StatisticsHandler(repository)
 
     val httpServer = new HttpServer(8080, transactionsHandler, statisticsHandler)
 
+    statisticsCalculator.start()
     httpServer.start()
     httpServer.join()
   }

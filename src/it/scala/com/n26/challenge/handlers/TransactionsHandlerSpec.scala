@@ -47,7 +47,7 @@ class TransactionsHandlerSpec extends Specification {
          |}
       """.stripMargin
     )
-    private val transaction = repository.findAll().get(0)
+    private val transaction = repository.findAll()(0)
 
     response.status ==== Status.Created
     transaction.amount must beCloseTo(12.3, 1.significantFigure)
@@ -65,7 +65,7 @@ class TransactionsHandlerSpec extends Specification {
     )
 
     response.status ==== Status.NoContent
-    repository.findAll().size() ==== 0
+    repository.findAll().length ==== 0
   }
 
   "returns bad request when json is malformed" in new Context {
