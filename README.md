@@ -7,7 +7,6 @@ Implementation of backend challenge.
 In order to run the application locally the following requirements must be met:
 
 - `sbt >= 1.0.2` must be installed
-- `scala 2.12.4` must be installed
 
 ### Running Tests
 
