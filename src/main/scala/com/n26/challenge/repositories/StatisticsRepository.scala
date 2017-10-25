@@ -16,8 +16,13 @@ class StatisticsRepository() {
     }
   }
 
-  def findAll(): ArrayBuffer[Transaction] = {
-    transactions
+  // This is only used by the tests
+  def findAll(): Array[Transaction] = {
+    this.synchronized {
+      val copy = Array.ofDim[Transaction](transactions.length)
+      transactions.copyToArray(copy)
+      copy
+    }
   }
 
   // Time complexity - O(1)
@@ -32,9 +37,11 @@ class StatisticsRepository() {
   // Space complexity - O(n)
   def rebuildStatistics(expirationChecker: ExpirationChecker): Unit = {
     this.synchronized {
+      // O(n)
       val newTransactions = transactions
         .filter(transaction => expirationChecker.isNotExpired(transaction.timestamp))
 
+      // O(n)
       val newStatistics = newTransactions
         .foldLeft(Statistics.Empty)((acc, transaction) => {
           val sum = acc.sum + transaction.amount
