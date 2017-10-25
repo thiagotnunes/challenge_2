@@ -25,7 +25,10 @@ class TransactionRequestParser(expirationChecker: ExpirationChecker) {
 
   private def asTransaction(json: JsValue): Either[ApiError, Transaction] = {
     json.validate[Transaction]
-      .fold(_ => Left(ApiError.MalformedJson), Right(_))
+      .fold(
+        _ => Left(ApiError.InvalidTransaction),
+        Right(_)
+      )
   }
 
   private def notExpired(transaction: Transaction): Either[ApiError, Unit] = {

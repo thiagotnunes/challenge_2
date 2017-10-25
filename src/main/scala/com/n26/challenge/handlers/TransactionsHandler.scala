@@ -27,6 +27,7 @@ class TransactionsHandler(parser: TransactionRequestParser,
 
   private def handleError(error: ApiError): Future[Response] = {
     error match {
+      case ApiError.InvalidTransaction => Future.value(Response(Status.UnprocessableEntity))
       case ApiError.MalformedJson => Future.value(Response(Status.BadRequest))
       case ApiError.ExpiredTransaction => Future.value(Response(Status.NoContent))
     }

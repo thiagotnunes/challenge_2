@@ -61,7 +61,19 @@ class TransactionsHandlerSpec extends Specification {
     )
 
     response.status ==== Status.NoContent
-    repository.findAll().length ==== 0
+  }
+
+  "returns unprocessable entity when json fields are invalid" in new Context {
+    private val response = http.postJson("/transactions")(
+      s"""
+         |{
+         |  "amount": "2",
+         |  "timestamp": "2017-01-01"
+         |}
+      """.stripMargin
+    )
+
+    response.status ==== Status.UnprocessableEntity
   }
 
   "returns bad request when json is malformed" in new Context {
