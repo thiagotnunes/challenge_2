@@ -59,6 +59,9 @@ class StatisticsHandlerSpec extends Specification {
     repository.add(Transaction(40, now.minusSeconds(80).toEpochMilli))
     repository.add(Transaction(50, now.minusSeconds(1).toEpochMilli))
 
+    // Sleeping in tests is not optimal, but I am gonna go with it
+    // to make sure that the scheduler has built the stats cache
+    Thread.sleep(config.schedulerIntervalMillis * 2)
     private val response = http.getJson("/statistics")
 
     response.status ==== Status.Ok
